@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Stop & Breathe</title>
+  <style>
+    body {
+        background-image: url("stars.jpg");
+        color:white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: monospace;
+    }
+    .container {
+        text-align: center;
+        border-radius: 90px;
+        padding: 20px;
+        background-color: #C8ACD6;
+
+    }
+    .timer {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+    .bar {
+        width: 70%;
+        background-color: #ddd;
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 0 auto;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .bar .progress {
+        background-color: #433D8B;
+        height: 20px;
+        border-radius: 20px;
+        transition: width 0.5s ease-in-out;
+    }
+    button {
+        font-size: 1.5rem;
+        padding: 10px 20px;
+        margin: 20px;
+        margin-top: 30px;
+        border: none;
+        background-color: #2E236C;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 30px;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-family: monospace;
+    }
+    button:hover {
+        background-color: #4F1787;
+    }
+    .name {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: #2E236C;
+    }
+    .guides {
+        height: 10vh;
+        width: 25vw;
+        background-color: #C8ACD6;
+        position: absolute;
+        top: 78%;
+        border-radius: 50px;
+    }
+    .guides:hover {background-color: #C68FE6;}
+    .content {
+        color: #2E236C;
+        text-align: center;
+    }
+
+</style>
+</head>
+
+<body>
+    <!--timer-->
+    <div class="container">
+        <div class="name">Stop & Breathe</div>
+        <div class="timer">{{formatTime}}</div>
+        <div class="bar">
+            <div class="progress":style="{ width: progressBarWidth }"></div>
+        </div>
+        <button @click="startTimer":disabled="isRunning">Start</button>
+        <button @click="stopTimer":disabled="!isRunning" class="pause-button">Pause</button>
+        <button @click="resetTimer" class="reset-button">Reset</button>
+    </div>
+
+    <!--guides-->
+    <div class="guides">
+        <div class="content">
+            <p class="deco">Deep breathing</p>
+            <a href="https://www.bhf.org.uk/informationsupport/heart-matters-magazine/wellbeing/breathing-exercises">
+                Click here!</a>
+        </div>
+    </div>
+
+    <!--insert Vue 2-->
+    <script src=
+"https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        new Vue({
+            el: '.container',
+
+            // set time 10 minutes = 600 seconds
+            data: {
+                time: 600,
+                isRunning: false,
+                progressBarWidth: '100%'
+            },
+            computed: {
+                formatTime() {
+                    let minutes = Math.floor(this.time / 60);
+                    let seconds = this.time % 60;
+                    return `${minutes.toString().padStart(2, '0')}:
+                    ${seconds.toString().padStart(2, '0')}`;
+                }
+            },
+
+            // add function to start, stop and reset timer
+            methods: {
+                startTimer() {
+                    this.isRunning = true;
+                    this.timer = setInterval(() => {
+                        if (this.time > 0) {
+                            this.time--;
+                            this.progressBarWidth = `${(this.time / 600)
+                                                     * 100}%`;
+                        } else {
+                            this.stopTimer();
+                            alert('You have breathed properly');
+                        }
+                    }, 1000);
+                },
+                stopTimer() {
+                    clearInterval(this.timer);
+                    this.isRunning = false;
+                },
+                resetTimer() {
+                    this.stopTimer();
+                    this.time = 600;
+                    this.progressBarWidth = '100%';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
